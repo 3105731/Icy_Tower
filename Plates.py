@@ -1,33 +1,52 @@
 from Rectangle import *
 from random import randint
 # import G
-
+from texture import names
 def createPlate():
+	""" create first plate"""
 	if G.plates == []:
-		x = randint(0, 600)
-		right = (randint(100, 200)) + x
-		left= x
-		top = 100
-		bottom = 90
+		left = randint(200, 400)
+		right = (randint(300, 400)) + left
+		top = 130
+		bottom = 70
 		rec = Rec(top,bottom,right,left)
 		G.plates.append(rec)
-
+	
+	"""create other plates"""
 	if G.plates[-1].top <= G.frastom_top - 100:
-		x = randint(0, 600)
-		right = (randint(100, 200)) + x
-		left= x
-		top = G.plates[-1].top + 100
-		bottom = G.plates[-1].bottom + 100
+		left = randint(100, 600)
+		right = (randint(170, 200)) + left
+		top = G.plates[-1].top + 120
+		bottom = G.plates[-1].bottom + 120
 		rec = Rec(top,bottom,right,left)
+
+		""" CREATE RANDOM NUTS"""
+		if randint(0,1) == 1:
+			l = randint(left + 50,right -50)
+			coin = Rec(top+25,top-15,l + 50,l)
+			rec.coin = coin
 		G.plates.append(rec)
 		
 def stairs():
 	createPlate()
-	for i in range(0,len(G.plates),1):
-		G.plates[i].right += G.stair_step_x * G.plates[i].direction
-		G.plates[i].left += G.stair_step_x * G.plates[i].direction
-		if G.plates[i].right >= 800:
-			G.plates[i].direction = -1
-		elif G.plates[i].left <= 0:
-			G.plates[i].direction = 1
-		G.plates[i].drawrec()
+	""" check the plates """
+	for plate in G.plates:
+		""" move coins in x direction sycthronically with plates"""
+		if plate.coin:
+			glBindTexture(GL_TEXTURE_2D,names[8])
+			plate.coin.drawrec()
+			plate.coin.right += G.stair_step_x * plate.direction
+			plate.coin.left += G.stair_step_x * plate.direction
+
+		""" move plates in x direction"""
+		plate.right += G.stair_step_x * plate.direction
+		plate.left += G.stair_step_x * plate.direction
+		if plate.right >= 800:
+			plate.direction = -1
+		elif plate.left <= 0:
+			plate.direction = 1
+		glBindTexture(GL_TEXTURE_2D,names[3])
+		plate.drawrec()
+	
+	""" remove the plates out of the frastom"""
+	G.plates = [it for it in G.plates if it.top > G.frastom_bottom]

@@ -8,3 +8,4 @@ def Text(score,x,y):
     string = score.encode()
     for c in string:
         glutStrokeCharacter(GLUT_STROKE_ROMAN,c)
+    glBindTexture(GL_TEXTURE_2D,-1)
