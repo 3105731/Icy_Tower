@@ -1,4 +1,4 @@
-from Ball import*
+from Player import*
 from Plates import*
 from arrow import*
 from text import *
@@ -21,11 +21,11 @@ def game_speed():
 	if 3 < G.score <= 50:
 		G.frastom_y = 1
 	elif 50 < G.score <= 100:
-		G.frastom_y = 1.5
+		G.frastom_y = 1.5 
 	elif G.score > 100:
 		G.frastom_y = 2
-
-mixer.init()
+	# load sound
+mixer.init()   
 G.bstart_sound=mixer.Sound('sound/before start the game.mp3')
 G.Astart_sound=mixer.Sound('sound/when the game run.mp3')
 G.game_over_sound=mixer.Sound('sound/after lose in background.mp3')
@@ -35,6 +35,11 @@ def init():
 	glClearColor(0.0, 0.0, 0.0, 0.0)
 	glClear(GL_COLOR_BUFFER_BIT)
 	glMatrixMode(GL_PROJECTION)
+	
+	glLoadIdentity()	#important
+
+	glOrtho(0, 800,G.frastom_bottom ,G.frastom_top, -1.0, 1.0) # left, right, bottom, top, near, far
+	glMatrixMode(GL_MODELVIEW)
 	if G.gamestart==False and G.gameover==False:
 		G.bstart_sound.play()
 	elif G.gamestart==True and G.gameover==False:
@@ -45,55 +50,48 @@ def init():
 		G.Astart_sound.stop()
 		if G.gameover == True:
 			G.game_over_sound.play()
-
-	glLoadIdentity()
-	if G.frastom_top - G.ball.top <= 200 and G.score > 3:
-		G.frastom_top = G.frastom_top - G.ball_dir_y + 2
-		G.frastom_bottom = G.frastom_bottom - G.ball_dir_y +2
+	if G.frastom_top - G.squirrel.top<=300:		
+		G.frastom_top += 2
+		G.frastom_bottom += 2
 
 	G.frastom_bottom += G.frastom_y 
 	G.frastom_top += G.frastom_y
-
-	glOrtho(0, 800,G.frastom_bottom ,G.frastom_top, -1.0, 1.0) # left, right, bottom, top, near, far
-	glMatrixMode(GL_MODELVIEW)
-	game_speed()	
+	game_speed()
+	
 
 
 def draw():
-    init()
-    global wall,gameo,startplay,exitgamerds
-    glLoadIdentity()
+	init()
+	global wall,startplay
+	glLoadIdentity()
 
-    if G.gamestart==False and G.gameover==False:
-        glBindTexture(GL_TEXTURE_2D,names[6])
-        wall.drawrec()
-        wall=Rec(G.frastom_top,G.frastom_bottom,800,0)
-        glBindTexture(GL_TEXTURE_2D,names[5])
-        startplay.drawrec()
+	if G.gamestart==False and G.gameover==False:
+		# intro
+		wall.drawrec(0)
+		startplay.drawrec(3)
 
-    if G.gamestart:
-        glBindTexture(GL_TEXTURE_2D,names[0])
-        wall.drawrec()
-        wall=Rec(G.frastom_top,G.frastom_bottom,800,0)
-        stairs()
-        player()
-	
-        normal_score = "Score"
-        Text(normal_score,20,G.frastom_top-160)
-        scoreNum = str(G.score)
-        Text(scoreNum,50,G.frastom_top-200)
-        High_Score = "High Score"
-        Text(High_Score,20,G.frastom_top-90)
-        HighScoreNum = str(G.hight_score)
-        Text(HighScoreNum,50,G.frastom_top-130)
+	if G.gamestart:
+		
+		wall.drawrec(5)
+		# to refresh wall dimensions
+		wall=Rec(G.frastom_top,G.frastom_bottom,800,0)
+		
+		stairs()
+		player()
+	 
+		normal_score = "Score"
+		Text(normal_score,20,G.frastom_top-160)
+		scoreNum = str(G.score)
+		Text(scoreNum,50,G.frastom_top-200)
+		High_Score = "High Score"
+		Text(High_Score,20,G.frastom_top-90)
+		HighScoreNum = str(G.hight_score)
+		Text(HighScoreNum,50,G.frastom_top-130)
 
-    if G.gameover==True:
-        glBindTexture(GL_TEXTURE_2D,names[2])
-        wall=Rec(G.frastom_top,G.frastom_bottom,800,0)
-        glBindTexture(GL_TEXTURE_2D,names[7])
-        wall.drawrec()
-
-    glutSwapBuffers()
+	if G.gameover==True:
+		wall=Rec(G.frastom_top,G.frastom_bottom,800,0)
+		wall.drawrec(1)
+	glutSwapBuffers()
 
 
 def game_timer(v):

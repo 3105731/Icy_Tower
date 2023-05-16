@@ -1,7 +1,6 @@
 from Rectangle import *
 from random import randint
-# import G
-from texture import names
+
 def createPlate():
 	""" create first plate"""
 	if G.plates == []:
@@ -23,8 +22,8 @@ def createPlate():
 		""" CREATE RANDOM NUTS"""
 		if randint(0,1) == 1:
 			l = randint(left + 50,right -50)
-			coin = Rec(top+25,top-15,l + 50,l)
-			rec.coin = coin
+			hazelnut = Rec(top+25,top-15,l + 50,l)
+			rec.hazelnut = hazelnut
 		G.plates.append(rec)
 		
 def stairs():
@@ -32,11 +31,10 @@ def stairs():
 	""" check the plates """
 	for plate in G.plates:
 		""" move coins in x direction sycthronically with plates"""
-		if plate.coin:
-			glBindTexture(GL_TEXTURE_2D,names[8])
-			plate.coin.drawrec()
-			plate.coin.right += G.stair_step_x * plate.direction
-			plate.coin.left += G.stair_step_x * plate.direction
+		if plate.hazelnut:
+			plate.hazelnut.drawrec(4)
+			plate.hazelnut.right += G.stair_step_x * plate.direction
+			plate.hazelnut.left += G.stair_step_x * plate.direction
 
 		""" move plates in x direction"""
 		plate.right += G.stair_step_x * plate.direction
@@ -45,8 +43,7 @@ def stairs():
 			plate.direction = -1
 		elif plate.left <= 0:
 			plate.direction = 1
-		glBindTexture(GL_TEXTURE_2D,names[3])
-		plate.drawrec()
+		plate.drawrec(2)
 	
 	""" remove the plates out of the frastom"""
 	G.plates = [it for it in G.plates if it.top > G.frastom_bottom]
