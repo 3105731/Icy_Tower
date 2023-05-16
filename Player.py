@@ -69,6 +69,7 @@ def player_mover_y(player):
 				"""reset values"""
 				G.moving_up = 16
 				G.moving_down = 0
+				G.ball_y_velocity = 0
 				G.on_plate = True
 
 				if G.keystates[0]== False and G.keystates[1] == False: 
@@ -92,18 +93,17 @@ def player_mover_y(player):
 
 	if player.bottom < G.frastom_bottom:
 		
-		player.bottom = G.frastom_bottom
+		player.bottom = 0
 		player.top = player.bottom + 80
 		G.moving_down = 0
 		G.moving_up = 16
 		G.ball_y_velocity = 0
-		G.frastom_y = 0
 		G.on_plate = False
 		if G.stand_left:
 			G.index=6
 		else:
 			G.index=7
-		if  G.frastom_y:
+		if  G.score>3:
 			G.gamestart = False
 			G.gameover = True
 			G.score = 0
